@@ -1,0 +1,7 @@
+// LC-001 Brute force / password spray (Microsoft Sentinel, SecurityEvent)
+// MITRE T1110.001, T1110.003 | Analytics rule: run every 10m, look back 10m, alert when results > 0
+SecurityEvent
+| where TimeGenerated > ago(10m) and EventID == 4625
+| summarize failures = count(), users = dcount(TargetAccount), targeted = make_set(TargetAccount, 50)
+    by IpAddress, Computer, bin(TimeGenerated, 10m)
+| where failures >= 10 or users >= 5

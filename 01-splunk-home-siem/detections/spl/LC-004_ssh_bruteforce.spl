@@ -1,0 +1,6 @@
+```LC-004 SSH brute force (Linux) | MITRE T1110.001 | Data: /var/log/auth.log (sourcetype linux_secure) | Schedule: */10 * * * *, last 10 min | Throttle 60m by src```
+index=linux sourcetype=linux_secure "Failed password"
+| rex "Failed password for (invalid user )?(?<user>\S+) from (?<src>\S+)"
+| bin _time span=10m
+| stats count AS failures dc(user) AS users values(user) AS targeted BY _time, src, host
+| where failures >= 10 OR users >= 5

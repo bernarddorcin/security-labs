@@ -1,0 +1,4 @@
+```LC-002 Encoded / download-cradle PowerShell | MITRE T1059.001, T1027 | Data: Sysmon EventCode 1 | Schedule: */10 * * * *, last 10 min | Throttle 60m by host```
+index=sysmon EventCode=1 (Image="*\\powershell.exe" OR Image="*\\pwsh.exe")
+    (CommandLine="*-enc*" OR CommandLine="*DownloadString*" OR CommandLine="*IEX*")
+| table _time host User ParentImage Image CommandLine

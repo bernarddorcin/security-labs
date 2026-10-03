@@ -1,0 +1,15 @@
+// LC-002 Encoded / download-cradle PowerShell
+// MITRE T1059.001, T1027
+// Option A: Microsoft Defender XDR advanced hunting / Sentinel with the Defender connector
+DeviceProcessEvents
+| where Timestamp > ago(10m)
+| where FileName in~ ("powershell.exe", "pwsh.exe")
+| where ProcessCommandLine has_any ("-enc", "EncodedCommand", "DownloadString", "IEX")
+| project Timestamp, DeviceName, AccountName, InitiatingProcessFileName, ProcessCommandLine
+
+// Option B: Sentinel SecurityEvent 4688 (requires "Include command line in process creation events")
+// SecurityEvent
+// | where TimeGenerated > ago(10m) and EventID == 4688
+// | where NewProcessName endswith "\\powershell.exe" or NewProcessName endswith "\\pwsh.exe"
+// | where CommandLine has_any ("-enc", "EncodedCommand", "DownloadString", "IEX")
+// | project TimeGenerated, Computer, SubjectUserName, ParentProcessName, CommandLine

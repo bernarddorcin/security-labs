@@ -1,0 +1,5 @@
+```LC-003 New local admin | MITRE T1136.001, T1098 | Data: Security 4720 (user created), 4732 (added to local group) | Schedule: */10 * * * *, last 10 min | Throttle 60m by host```
+index=wineventlog (EventCode=4720 OR EventCode=4732)
+| eval group=coalesce(Group_Name, TargetUserName)
+| where EventCode=4720 OR group="Administrators"
+| table _time host EventCode SubjectUserName TargetUserName MemberSid group

@@ -1,0 +1,6 @@
+```LC-001 Brute force / password spray | MITRE T1110.001, T1110.003 | Schedule: */10 * * * *, last 10 min | Throttle 60m by src```
+index=wineventlog EventCode=4625
+| eval user=coalesce(user, TargetUserName), src=coalesce(src, IpAddress, "unknown")
+| bin _time span=10m
+| stats count AS failures dc(user) AS users values(user) AS targeted BY _time, src, host
+| where failures >= 10 OR users >= 5

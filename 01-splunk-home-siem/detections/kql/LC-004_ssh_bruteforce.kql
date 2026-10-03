@@ -1,0 +1,10 @@
+// LC-004 SSH brute force (Microsoft Sentinel, Syslog table via Azure Monitor Agent)
+// MITRE T1110.001 | Analytics rule: run every 10m, look back 10m
+Syslog
+| where TimeGenerated > ago(10m)
+| where Facility in ("auth", "authpriv") and SyslogMessage has "Failed password"
+| extend user = extract(@"Failed password for (?:invalid user )?(\S+) from", 1, SyslogMessage),
+         src = extract(@" from (\S+) port", 1, SyslogMessage)
+| summarize failures = count(), users = dcount(user), targeted = make_set(user, 50)
+    by src, Computer, bin(TimeGenerated, 10m)
+| where failures >= 10 or users >= 5

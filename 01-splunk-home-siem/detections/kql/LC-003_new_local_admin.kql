@@ -1,0 +1,6 @@
+// LC-003 New local admin (Microsoft Sentinel, SecurityEvent)
+// MITRE T1136.001, T1098 | 4720 = user created, 4732 = member added to a security-enabled local group
+SecurityEvent
+| where TimeGenerated > ago(10m)
+| where EventID == 4720 or (EventID == 4732 and TargetUserName == "Administrators")
+| project TimeGenerated, Computer, EventID, SubjectUserName, TargetUserName, MemberSid
