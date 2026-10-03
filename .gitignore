@@ -1,0 +1,12 @@
+# OS clutter
+Thumbs.db
+desktop.ini
+.DS_Store
+# Raw recordings and exports stay off GitHub (link videos instead)
+*.mp4
+*.mkv
+*.mov
+# Local secrets or exports
+*.env
+*.pem
+*.key
